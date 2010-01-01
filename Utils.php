@@ -141,7 +141,12 @@
         function getConfigOption($attribute)
         {
                 $xml = new XMLReader();
-                $xml->open("/mnt/ext3/calaos/local_config.xml");
+                if (!$xml->open("/home/root/local_config.xml"))
+		{
+		    touch("/home/root/local_config.xml");
+		    if (!$xml->open("/home/root/local_config.xml"))
+   		        die("Failed to open '/home/root/local_config.xml'");
+		}
                 while($xml->read())
                 {
                         if ($xml->name == "calaos:option")
@@ -164,7 +169,12 @@
                 $config = Array();
 
                 $xml = new XMLReader();
-                $xml->open("/mnt/ext3/calaos/local_config.xml");
+                if (!$xml->open("/home/root/local_config.xml"))
+		{
+		    touch("/home/root/local_config.xml");
+		    if (!$xml->open("/home/root/local_config.xml"))
+   		        die("Failed to open '/home/root/local_config.xml'");
+		}
                 $found = false;
                 while($xml->read())
                 {
@@ -190,18 +200,18 @@
                         $config[] = $option;
                 }
 
-                $handle = fopen("/mnt/ext3/calaos/local_config.xml", "w");
-                if (fwrite($handle, '<?xml version="1.0"?>') === false) return false;
-                if (fwrite($handle, '<calaos:config xmlns:calaos="http://www.calaos.fr">') === false) return false;
+                $handle = fopen("/home/root/local_config.xml", "w+");
+                if (fwrite($handle, "<?xml version=\"1.0\"?>\n") === false) return false;
+                if (fwrite($handle, "<calaos:config xmlns:calaos=\"http://www.calaos.fr\">\n") === false) return false;
                 for ($i = 0;$i < count($config);$i++)
                 {
                         $opt = $config[$i];
-                        if (fwrite($handle, '<calaos:option name="'.$opt["name"].'" value="'.$opt["value"].'"/>') === false)
+                        if (fwrite($handle, '    <calaos:option name="'.$opt["name"].'" value="'.$opt["value"]."\"/>\n") === false)
                         {
                                 return false;
                         }
                 }
-                if (fwrite($handle, '</calaos:config>') === false) return false;
+                if (fwrite($handle, "</calaos:config>\n") === false) return false;
                 fclose($handle);
 
                 return true;

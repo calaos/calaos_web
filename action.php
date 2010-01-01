@@ -1,24 +1,11 @@
 <?php
         define('ENNA_WWW', 1);
         include_once('common.php');
+        include_once('Utils.php');
         define('PAGE_NAV', 0);
 
         require_once('ConfigParser.php');
         require_once('DetectServer.php');
-
-        function die_error($error_forbidden = true)
-        {
-                if ($error_forbidden)
-                {
-                        header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
-                        exit();
-                }
-                else
-                {
-                        $value = array("error" => 1);
-                        die (json_encode($value));
-                }
-        }
 
         $data = file_get_contents("php://input");
 
@@ -51,6 +38,17 @@
                                        'cmd' => 'list',
                                        'result' => $d->getServerList());
                         die (json_encode($value));
+                }
+        }
+
+	if ($jdata['action'] == 'write_config')
+        {
+                if ($jdata['cmd'] == 'all')
+                {
+		        $jvalue = json_decode($jdata['value']);
+			
+			setConfigOption("my life", "my rules");
+   			
                 }
         }
 

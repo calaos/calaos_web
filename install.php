@@ -33,8 +33,8 @@
       <div class="container-fluid">
         <div class="row-fluid">
 
-          <div class="well wizard-example">
-            <div id="MyWizard" class="wizard">
+          <div class="well">
+            <div id="wizard" class="wizard">
 	      <ul class="steps">
 	        <li data-target="#step1" class="active"><span class="badge badge-info">1</span>Step 1<span class="chevron"></span></li>
 	        <li data-target="#step2"><span class="badge">2</span>Step 2<span class="chevron"></span></li>
@@ -72,7 +72,7 @@
               </div>
               <!-- ************************************************************************************  -->
 	      <div class="step-pane" id="step3">
-                  <h1><img alt="calaos-icon" width=92 height=92 src="assets/img/calaosicon.png" class="img-rounded">Calaos</h1>
+                <h1><img alt="calaos-icon" width=92 height=92 src="assets/img/calaosicon.png" class="img-rounded">Calaos</h1>
                 <hr>
                 <form class="form-horizontal">
                   <label class="checkbox">
@@ -117,7 +117,7 @@
               </div>
               <!-- ************************************************************************************  -->
 	      <div class="step-pane" id="step4">
-                  <h1><img alt="logitech-icon" width=92 height=92 src="assets/img/logitechmediaserver.png" class="img-rounded">Squeeze Box</h1>
+                <h1><img alt="logitech-icon" width=92 height=92 src="assets/img/logitechmediaserver.png" class="img-rounded">Squeeze Box</h1>
                 <hr>
                 <form class="form-horizontal">
                   <label class="checkbox">
@@ -130,13 +130,16 @@
                       <input type="checkbox" value="1">
                           Enable Squeezeplay
                     </label>
-                    
-                    <div class="control-group">
-                      <label class="control-label" for="inputSqueezeplayName">Name of squeezeplay element</label>
-                      <div class="controls">
-                        <input type="text" id="inputSqueezeplayName" placeholder="Name">
-                      </div>
-                    </div>
+    
+
+                  <div id="main-title-help" class="hidden-phone">
+You can give this player a name that will be used to identify the player on the Media Server web pages.</div>
+
+                  <form class="form-inline">
+                    <label class="control-label" for="inputName">Player Name :</label>
+                    <input type="text" id="inputName" placeholder="Squeezebox Player">
+                  </form>
+
                     <div class="control-group">
                       <label class="checkbox">
                         <input type="checkbox" value="1">
@@ -144,12 +147,44 @@
                       </label>
                     </div>
                   </form>
-                  <div class="round-box">
-                     List of music sources
-                    <img id="music_source_loading" alt="loading" src="assets/img/ajax-loader.gif" />
 
-                    <div id="music_source_list">
+                  <h2 id="main-title">Music source</h2>
+                  <div id="main-title-help" class="hidden-phone">
+Select a valid Media Server where the box can connect and play your files.</div>
 
+                  <div class="row-fluid round-box">
+
+
+                    <div class="span6">
+                      <div class="page-header">
+                        <h4>List of music sources</h4>
+                      </div>
+                      <table id="music_source_list" class="table">
+                        <thead>
+                          <tr>
+                            <th style="width: 35%">Name</th>
+                            <th style="width: 20%">Version</th>
+                            <th style="width: 25%">IP address</th>
+                            <th style="width: 20%"></th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                      <img id="music_source_loading" alt="loading" src="assets/img/ajax-loader.gif" />
+
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td style="width: 30%">Manual Media Server IP Adress</td>
+                            <td style="width: 50%">
+                              <div class="input-prepend">
+                                <span class="add-on"><i class="icon-hdd"></i></span><input size="15" id="inputManualIP" type="text">
+                              </div>
+                            </td>
+                            <td style="width: 20%"><button id="btManualIP" class="btn" type="button" data-loading-text="Connecting...">Connect</button></td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
               </div>
