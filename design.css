@@ -1,0 +1,250 @@
+
+body
+{
+        text-align: center;
+        font: 76% tahoma,verdana,sans-serif;
+        color: #224467;
+}
+
+#loading
+{
+        display: none;
+        float: center;
+        top: 5%;
+        padding: 10px;
+        z-index: 4;
+        left: 5%;
+        text-align: center;
+}
+
+.main
+{
+        width: 720px;
+        margin: 0 auto;
+        padding: 5px;
+        text-align: left;
+        background:url('img/bg_page.png');
+        background-repeat: no-repeat;
+        background-position: bottom right;
+        background-color: #ffffff;
+}
+
+.maincontent
+{
+        padding: 10px;
+        margin-left: 20px;
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: normal;
+        color: #224467;
+        text-align: left;
+}
+
+.maincontent strong
+{
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #0066CC;
+        text-align: left;
+}
+
+.maincontentli
+{
+        margin-left: 3em;
+}
+
+.maincontentli strong
+{
+        font-size: 12px;
+        color: #224467;
+}
+
+.logo
+{
+        padding: 5px;
+        margin: 5px;
+        float: left;
+}
+
+.toolbar
+{
+        border: 1px solid #CCC;
+        padding: 4px;
+        background-image: url(img/top_back.png);
+}
+
+.footer
+{
+        width: 726px;
+        margin: 0 auto;
+        padding: 3px;
+        text-align: left;
+        background-color: #FFF;
+        font-family: Verdana, Helvetica, Arial, sans-serif;
+        color: white;
+        font-size: 10px;
+        text-decoration: none;
+        background-image: url(img/bottom_back.png);
+}
+
+.room
+{
+        font: 120% tahoma,verdana,sans-serif;
+        font-weight: bold;
+}
+
+a img
+{
+        border: none;
+}
+
+a
+{
+        text-decoration: none;
+        color: #11394C;
+}
+
+a:hover
+{
+        color: #37B1EE;
+}
+
+#login
+{
+        padding: 10px;
+        margin: 5px;
+}
+
+.clear{
+clear:both;
+margin:0;
+}
+
+#menu
+{
+        background-color: white;
+        width: 100px;
+        margin: 0;
+        padding: 5px;
+        text-align: center;
+}
+#content
+{
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        padding: 5px;
+        margin: 5px;
+}
+
+.list_header
+{
+        padding: 5px;
+        background-color: #274383;
+        color: white;
+        font: 120% tahoma,verdana,sans-serif;
+        font-weight: bold;
+}
+
+.list_scenario
+{
+        border:1px solid #d3e3f5;
+}
+a.sub_scenario
+{
+        display:block;
+        line-height:18px;
+        border:1px solid #fff;
+        border-bottom:1px solid #afc3de;
+        padding:5px 10px;
+        background: #f5f7fa;
+}
+a.sub_scenario:hover
+{
+        background: #afc3de;
+        color:#fff;
+        border-bottom:1px solid #11394C;
+}
+
+.dojoDialog
+{
+        background : #eee;
+        border : 1px solid #999;
+        -moz-border-radius : 5px;
+        padding : 4px;
+}
+
+.dojoButton .dojoButtonContents
+{
+        font-size: 14;
+}
+.inside_button
+{
+        font-size: 14;
+        padding-top: 3px;
+        padding-bottom: 3px;
+}
+
+.title
+{
+        padding: 5px;
+        background-color: #4f81f1;
+        color: white;
+        font: 150% tahoma,verdana,sans-serif;
+        font-weight: bold;
+}
+
+.contentpaneopen {
+        border : 0px ridge #0099cc;
+        width: 100%;
+        padding: 1px;
+}
+
+.contentheading, .componentheading {
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        color: #0066CC;
+        text-align: left;
+}
+.inputbox {
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        color: #000000;
+        background-color: #F0F0F0;
+        border: 1px solid #CCCCCC;
+        margin-top: 5px;
+        margin-bottom: 5px;
+}
+
+.inputboxhome {
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        height: 20px;
+        width: 200px;
+        color: #000000;
+        background-color: #F0F0F0;
+        border: 2px solid #CCCCCC;
+        margin-top: 5px;
+        margin-bottom: 5px;
+}
+
+.submit_button
+{
+        color: white;
+        padding: 3px 8px 3px 8px;
+        background: #7f9bc0;
+        border: 1px solid #7791b6;
+}
+
+.tt
+{
+        border-bottom: 1px dotted black;
+        padding: 5px;
+        text-align: right;
+        cursor: pointer;
+}
+body .dojoTooltip
+{
+/*         color: blue; */
+}

@@ -1,0 +1,106 @@
+body
+{
+        font: 76% tahoma,verdana,sans-serif;
+        color: black;
+}
+.title
+{
+        font-size: 1.4em;
+        background-color: #afc3de;
+        color: white;
+        padding: 5px;
+        font-weight: bold;
+}
+.title a
+{
+        text-decoration: none;
+}
+.title img
+{
+        vertical-align: middle;
+        border: none;
+}
+a
+{
+        color: #5b82b7;
+}
+#login_error
+{
+        background-color:#800;
+        color:#fff;
+        font-size:11px;
+        padding:5px;
+        -webkit-border-radius:4px;
+        -moz-border-radius:4px;
+        margin:8px;
+}
+.Footer
+{
+        font-size: 0.9em;
+        color: #888;
+}
+.Block
+{
+        background: white;
+        border: 1px solid #eee;
+        padding: 4px;
+}
+.ArrowMore a
+{
+        background-image: url(img/chevron.png);
+        background-position: right center;
+        background-repeat: no-repeat;
+}
+.Menu ul
+{
+        margin: 0;
+        padding: 0;
+}
+
+.Menu li
+{
+        list-style-type: none;
+}
+
+.ItemContent
+{
+        text-decoration: none;
+        display: block;
+        background-color: white;
+        border: 1px solid #eee;
+        height: 60px;
+        padding: 3px;
+        margin-bottom: 2px;
+        color: black;
+        text-align: left;
+}
+
+.AutoHeight
+{
+        height: auto;
+}
+
+.Menu li img
+{
+        float: left;
+        border: none;
+        margin-right: 11px;
+        margin-left: 0pt;
+}
+
+a img
+{
+        border: none;
+}
+
+.Menu li em
+{
+        display: block;
+        font-weight: bold;
+        font-size: 1.2em;
+        font-style: normal;
+}
+.Menu li small
+{
+        font-style: italic;
+}

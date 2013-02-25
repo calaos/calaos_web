@@ -1,4 +1,5 @@
-calaos_web
+Calaos Web Interface
 ==========
 
-Calaos web interface
+Web interface for the Calaos Home automation system
+
