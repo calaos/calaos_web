@@ -1,67 +1,106 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>:: Calaos - Control your Home</title>
-<?php
-        if (isset($debug))
-        {
-?>
-<script type="text/javascript">
-        var djConfig = {isDebug: true };
-</script>
-<?php
-        }
-?>
-<script type="text/javascript" src="dojo.js"></script>
-<script language="JavaScript" type="text/javascript">
-        dojo.require("dojo.widget.*");
-        dojo.require("dojo.widget.FloatingPane");
-        dojo.require("dojo.widget.ResizeHandle");
-        dojo.require("dojo.widget.ComboBox");
-        dojo.require("dojo.widget.ContentPane");
-        dojo.require("dojo.widget.Button");
-        dojo.require("dojo.widget.Spinner");
-        dojo.require("dojo.widget.DropdownTimePicker");
-        dojo.require("dojo.io.IframeIO");
-</script>
-<script type="text/javascript" src="calaos.js"></script>
-<link rel="stylesheet" type="text/css" href="design.css" />
-</head>
-<body background="img/bg.png">
-<table width="750" cellspacing="0" cellpadding="0" border="0" align="center"><tr>
-<td width="15" valign="top" background="img/left_shadow.png" style="background-repeat: repeat-y;"/></td>
-<td>
-<div class="main">
-<table width="100%"><tr>
-<td align="left">
-<div class="logo">
-<a href="http://www.calaos.fr"><img alt="calaos" src="img/calaos.new.png" /></a>
-</div>
-</td>
-<td align="right" valign="bottom">
-<a href="#" onclick="ShowStatus('Linux Everywhere !', true); return true;"><img alt="tux" src="img/tux.png" />
-</td>
-</tr></table>
-<div class="clear"></div>
+  
+  <!-- start: Meta -->
+  <meta charset="utf-8">
+  <title>Calaos Admin</title>
+  <meta name="description" content="Calaos Admin">
+  <!-- end: Meta -->
 
-<div class="toolbar">
-<table width="100%">
-<tr>
-<td><span id="status"></span></td>
-<td align="right"><img style="vertical-align: middle;" src="img/exit.gif" alt="exit" /> <a href="index.php?logout=1">Se d&eacute;connecter</a></td>
-</tr>
-</table>
-</div>
+  
+  <!-- start: CSS -->
+  <link id="bootstrap-style" href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="assets/css/docs.css" rel="stylesheet">
+  <!-- end: CSS -->
 
-<table width="100%" border="0">
-<tr>
-<td valign="top">
-<div id="menu">
-<a href="javascript:MenuHome();"><img alt="home" src="img/home.png" /></a>
-<a href="javascript:MenuMultimedia();"><img alt="multimedia" src="img/multi.png" /></a>
-<a href="javascript:MenuConfig();"><img alt="config" src="img/config.png" /></a>
-<div id="loading"><img src="img/loading_squares.gif" alt="loading" /></div>
-</div>
-</td>
+  <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <link id="ie-style" href="assets/css/ie.css" rel="stylesheet">
+  <![endif]-->
+  
+  <!--[if IE 9]>
+  <link id="ie9style" href="assets/css/ie9.css" rel="stylesheet">
+  <![endif]-->
+  
+  <!-- start: Favicon -->
+  <link rel="shortcut icon" href="assets/img/favicon.ico">
+  <!-- end: Favicon -->
+  
+
+  <body>
+    <!-- start: Header -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+	  <a class="brand"><img alt="calaos" src="assets/img/logo_calaos.png"></a>
+          <a class="brand" href="index.php">Calaos</a> 
+          <a class="btn btn-navbar collapsed" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse" data-toggle="collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- start: Header -->
+    
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <!-- start: Main Menu -->
+        <div class="well sidebar-nav">
+          <ul class="nav nav-list">
+            <li class="nav-header"><a href="#"><i class="icon-home"></i>Ma Maison</a></li>
+<?php
+
+require_once "Calaos.php";
+
+$calaos = Calaos::Instance();
+
+
+//get the number of rooms
+$res = explode(" ", $calaos->SendRequest("home ?"));
+
+for ($i = 1;$i < count($res);$i++)
+{
+  list($room, $count) = explode(":", urldecode($res[$i]), 2);
+
+  $res2 = explode(" ", $calaos->SendRequest("home get ".$room));
+
+
+  list($str, $countr) = explode(":", urldecode($res2[1]), 2);
+  if ($countr <= 0) continue;
+
+  $max_hits = 0;
+  for ($j = 2;$j < count($res2);$j++)
+  {
+    list($id, $opt, $value) = explode(":", urldecode($res2[$j]), 3);
+    if ($opt == "hits" && $value > $max_hits)
+    $max_hits = $value;
+  }
+
+  $rooms[$room] = array($max_hits, $count);
+  $cpt = 0;
+
+  foreach ($rooms as $room => $opt)
+  {
+    if ($room == "Internal") continue;
+    $rname = getRoomTypeString($room);
+?>
+    <li><a href="#">
+<?php
+    echo $rname;
+?>
+    </a></li>
+<?php
+  }
+}
+?>
+            </ul>
+        </div>
+        <!-- end: Main Menu -->
+
+      </div>
+    </div>
+	
+        
