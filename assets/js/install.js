@@ -3,7 +3,7 @@
 $(document).ready(function()
 {
         $.ajax({
-                url: 'action.php',
+                url: 'install_action.php',
                 type: 'POST',
                 data: '{ "action": "music_source", "cmd": "list" }',
                 success: function (data) {
@@ -23,7 +23,7 @@ $(document).ready(function()
                                 btn.click(function() {
                                         btn.button('loading');
                                         $.ajax({
-                                                url: 'action.php',
+                                                url: 'install_action.php',
                                                 type: 'POST',
                                                data: '{ "action": "music_source", "cmd": "setServer", "value": {"ip":"' + server['ip'] + '", "name":"' + server['name'] + '", "mac":"' + server['mac'] + '", "uuid":"' + server['uuid'] + '"} }',
                                                 success: function (data) {
@@ -42,7 +42,7 @@ $(document).ready(function()
                 var btn = $(this);
                 btn.button('loading');
                 $.ajax({
-                        url: 'action.php',
+                        url: 'install_action.php',
                        type: 'POST',
                        data: '{ "action": "music_source", "cmd": "setServer", "value": {"ip":"' + $("#inputManualIP").val() + '"} }',
                        success: function (data) {
@@ -58,7 +58,7 @@ $(document).ready(function()
                 var btn = $(this);
                 btn.button('loading');
                 $.ajax({
-                        url: 'action.php',
+                        url: 'install_action.php',
                         type: 'POST',
                         data: '{ "action": "music_source", "cmd": "setName", "value": "' + $("#inputName").val() + '" }',
                         success: function (data) {
@@ -72,7 +72,7 @@ $(document).ready(function()
 	$('#wizard').on('finished', function(e, data) {
 	    console.log("Wizard Finished");
 	    $.ajax({
-                       url: 'action.php',
+                       url: 'install_action.php',
                        type: 'POST',
                        data: '{ "action": "write_config", "cmd": "all", "value": {"hostname":"' +  $("#inputHostname").val() + '", "calaos_password": "' + $("#inputPassword").val() + '", "calaos_user": "' + $("#inputUsername").val() + '" }}',
                         success: function (data) {

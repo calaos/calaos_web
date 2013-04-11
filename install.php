@@ -214,6 +214,6 @@ Select a valid Media Server where the box can connect and play your files.</div>
       <!-- Placed at the end of the document so the pages load faster -->
       <script src="assets/js/jquery-1.8.2.min.js"></script>
       <script src="assets/wizard.js"></script>
-      <script src="assets/js/squeezebox-musicsource.js"></script>
+      <script src="assets/js/install.js"></script>
     </body>
 </html>
