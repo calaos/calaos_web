@@ -76,7 +76,7 @@
                 <hr>
                 <form class="form-horizontal">
                   <label class="checkbox">
-                    <input type="checkbox" value="1">
+                    <input type="checkbox" id="checkStartCalaosServer" value="true">
                           Enable Calaos Server
                   </label>
                   
@@ -96,14 +96,7 @@
                 </form>
                 <form class="form-horizontal">
                   <label class="checkbox">
-                    <input type="checkbox" value="1">
-                          Enable Calaos Web
-                  </label>
-                </form>
-
-                <form class="form-horizontal">
-                  <label class="checkbox">
-                    <input type="checkbox" value="1">
+                    <input type="checkbox" id="checkStartCalaosHome" value="true" >
                           Enable Calaos Home
                   </label>
                   
@@ -119,33 +112,22 @@
 	      <div class="step-pane" id="step4">
                 <h1><img alt="logitech-icon" width=92 height=92 src="assets/img/logitechmediaserver.png" class="img-rounded">Squeeze Box</h1>
                 <hr>
-                <form class="form-horizontal">
-                  <label class="checkbox">
-                    <input type="checkbox" value="1">
-                          Enable Squeezecenter
-                  </label>
 
                   <form class="form-horizontal">
                     <label class="checkbox">
-                      <input type="checkbox" value="1">
+                      <input type="checkbox" value="true" id="checkStartSqueezeplay">
                           Enable Squeezeplay
                     </label>
     
 
                   <div id="main-title-help" class="hidden-phone">
-You can give this player a name that will be used to identify the player on the Media Server web pages.</div>
+                  You can give this player a name that will be used to identify the player on the Media Server web pages.</div>
 
                   <form class="form-inline">
                     <label class="control-label" for="inputName">Player Name :</label>
-                    <input type="text" id="inputName" placeholder="Squeezebox Player">
+                    <input type="text" id="inputSqueezePlayName" placeholder="Squeezebox Player">
                   </form>
 
-                    <div class="control-group">
-                      <label class="checkbox">
-                        <input type="checkbox" value="1">
-                          Enable Squeezeplay Interface
-                      </label>
-                    </div>
                   </form>
 
                   <h2 id="main-title">Music source</h2>

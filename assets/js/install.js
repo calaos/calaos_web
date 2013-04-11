@@ -74,7 +74,17 @@ $(document).ready(function()
 	    $.ajax({
                        url: 'install_action.php',
                        type: 'POST',
-                       data: '{ "action": "write_config", "cmd": "all", "value": {"hostname":"' +  $("#inputHostname").val() + '", "calaos_password": "' + $("#inputPassword").val() + '", "calaos_user": "' + $("#inputUsername").val() + '" }}',
+                       data: '{ "action": "write_config",\
+		              "cmd": "all",\
+  		              "value": {"hostname":"' + $("#inputHostname").val()
+                              + '", "calaos_password": "' + $("#inputPassword").val()
+                              + '", "calaos_user": "' + $("#inputUsername").val()
+                              + '", "start_calaos_server": "' + $("#checkStartCalaosServer").is(':checked')
+                              + '", "start_calaos_home": "' + $("#checkStartCalaosHome").is(':checked')
+                              + '", "start_squeezeplay": "' + $("#checkStartSqueezePlay").is(':checked')
+                              + '", "squeezeplay_name": "' + $("#inputSqueezePlayName").val()
+                              + '", "start_shairport": "' + $("#checkStartShairport").is(':checked')
+                              + '" }}',
                         success: function (data) {
                                 setTimeout(function () {
                                         btn.button('reset');
