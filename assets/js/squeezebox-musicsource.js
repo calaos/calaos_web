@@ -74,7 +74,7 @@ $(document).ready(function()
 	    $.ajax({
                        url: 'action.php',
                        type: 'POST',
-                       data: '{ "action": "write_config", "cmd": "all", "value": {"hostname":"' + $("#inputHostname").val() + '", "password": "' + $("#inputPassword").val() + '", "username": "' + $("#inputUsername").val() + '" }}',
+                       data: '{ "action": "write_config", "cmd": "all", "value": {"hostname":"' +  $("#inputHostname").val() + '", "calaos_password": "' + $("#inputPassword").val() + '", "calaos_user": "' + $("#inputUsername").val() + '" }}',
                         success: function (data) {
                                 setTimeout(function () {
                                         btn.button('reset');

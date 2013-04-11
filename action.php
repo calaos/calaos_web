@@ -1,57 +1,54 @@
 <?php
-        define('ENNA_WWW', 1);
-        include_once('common.php');
-        include_once('Utils.php');
-        define('PAGE_NAV', 0);
+define('ENNA_WWW', 1);
+include_once('common.php');
+include_once('Utils.php');
+define('PAGE_NAV', 0);
 
-        require_once('ConfigParser.php');
-        require_once('DetectServer.php');
+require_once('ConfigParser.php');
+require_once('DetectServer.php');
 
-        $data = file_get_contents("php://input");
+$data = file_get_contents("php://input");
 
-        header("Content-type: application/json");
+header("Content-type: application/json");
 
-        $jdata = json_decode($data, true);
+$jdata = json_decode($data, true);
 
-        if ($jdata == NULL)
-        {
-                //If json_decode failed, we can try to get the json from traditionnal Form POST
-                if (isset($_POST["json"]))
-                {
-                        $jdata = json_decode(stripcslashes($_POST["json"]), true);
-                        if ($jdata == NULL)
-                                die_error();
-                }
-                else
-                {
-                        die_error();
-                }
-        }
+if ($jdata == NULL)
+{
+  //If json_decode failed, we can try to get the json from traditionnal Form POST
+  if (isset($_POST["json"]))
+  {
+    $jdata = json_decode(stripcslashes($_POST["json"]), true);
+    if ($jdata == NULL)
+    die_error();
+  }
+  else
+{
+    die_error();
+  }
+}
 
-        if ($jdata['action'] == 'music_source')
-        {
-                if ($jdata['cmd'] == 'list')
-                {
-                        $d = new DetectServer();
-                        $d->discover();
-                        $value = array('action' => 'music_source',
-                                       'cmd' => 'list',
-                                       'result' => $d->getServerList());
-                        die (json_encode($value));
-                }
-        }
+if ($jdata['action'] == 'music_source')
+{
+  if ($jdata['cmd'] == 'list')
+  {
+    $d = new DetectServer();
+    $d->discover();
+    $value = array('action' => 'music_source',
+                   'cmd' => 'list',
+                   'result' => $d->getServerList());
+    die (json_encode($value));
+  }
+}
 
-	if ($jdata['action'] == 'write_config')
-        {
-                if ($jdata['cmd'] == 'all')
-                {
-		        $jvalue = json_decode($jdata['value']);
-			
-			setConfigOption("my life", "my rules");
-   			
-                }
-        }
+if ($jdata['action'] == 'write_config')
+{
+  foreach ($jdata['value'] as $option => $value) 
+  {
+     setConfigOption($option, $value);
+  }
+}
 
-        //Error unknown command/action
-        die_error();
+//Error unknown command/action
+die_error();
 ?>

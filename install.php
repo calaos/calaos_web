@@ -65,7 +65,7 @@
                   <div class="control-group">
                     <label class="control-label" for="hostname">Hostname</label>
                     <div class="controls">
-                      <input type="text" id="inputHostname" placeholder="Hostname">
+                      <input type="text" id="inputHostname" placeholder="Hostname" type="text" >
                     </div>
                   </div>
                 </form>
