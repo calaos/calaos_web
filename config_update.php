@@ -41,6 +41,32 @@ while($xml->read())
         return -1;
       }
     }
+    if ($xml->getAttribute("name") == "start_calaos_server")
+    {
+	if ($xml->getAttribute("value") == "true")
+	    exec("systemctl enable calaos-server");
+	else
+	    exec("systemctl disable calaos-server");
+    }
+
+    if ($xml->getAttribute("name") == "start_calaos_home")
+    {
+	if ($xml->getAttribute("value") == "true")
+	    exec("systemctl enable calaos-home");
+	else
+	    exec("systemctl disable calaos-home");
+    }
+    if ($xml->getAttribute("name") == "hostname")
+    {
+      
+    }
+    if ($xml->getAttribute("name") == "start_shairport")
+    {
+	if ($xml->getAttribute("value") == "true")
+	    exec("systemctl enable shairport");
+	else
+	    exec("systemctl disable shairport");
+    }
   }
 }
 
