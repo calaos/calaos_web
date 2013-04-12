@@ -1,4 +1,11 @@
 <?php
+
+	if (!file_exists(getenv("HOME") . "/.config/calaos/local_config.xml"))
+	{	
+		include_once "install.php";
+                exit();
+	}
+
         //auth stuff
         require_once "Utils.php";
 
