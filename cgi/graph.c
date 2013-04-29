@@ -1,3 +1,8 @@
+/* 
+   gcc -o graph.cgi graph.c `pkg-config eet eina --cflags --libs` -ggdb -g3 -O0
+   QUERY_STRING="probe=input_10&precision=h&start=1367100000&stop=1367100000"  ./graph.cgi datalogger.eet
+*/
+
 #include <stdio.h>
 
 #include <Eina.h>
@@ -58,7 +63,7 @@ struct _Calaos_DataLogger_List
 static Eet_Data_Descriptor *calaos_datalogger_values_edd = NULL;
 static Eet_Data_Descriptor *calaos_datalogger_list_edd = NULL;
 static Calaos_Graph_Args *args = NULL;
-
+static const char *filename;
 static void
 _init_eet_descriptors(void)
 {
@@ -94,7 +99,7 @@ _print_values_mins(Calaos_Graph_Args *args)
   int list_len = 0;
   Eina_List *filtered;
 
-  ef = eet_open("/etc/calaos/datalogger.eet", EET_FILE_MODE_READ_WRITE);
+  ef = eet_open(filename, EET_FILE_MODE_READ_WRITE);
 
   snprintf(section, sizeof(section), "calaos/sonde/%s/%d/%d/%d/%d/values", args->probe, 
 	   args->start->tm_year + 1900, args->start->tm_mon + 1, args->start->tm_mday, args->start->tm_hour);
@@ -136,7 +141,7 @@ _print_values_hours(Calaos_Graph_Args *args)
   Eina_List *filtered;
   int year, mon, mday, hour = 0;
 
-  ef = eet_open("/etc/calaos/datalogger.eet", EET_FILE_MODE_READ_WRITE);
+  ef = eet_open(filename, EET_FILE_MODE_READ_WRITE);
   
   for (hour = args->start->tm_hour; hour <=  args->stop->tm_hour ; hour++)
    
@@ -281,10 +286,16 @@ int main(int argc, char** argv)
   char *query;
   char *phrase;
 
-  args = calloc(1, sizeof(Calaos_Graph_Args));
-
   eina_init();
   eet_init();
+
+  if (argc > 1)
+    filename = eina_stringshare_add(argv[1]);
+  else
+    filename = eina_stringshare_add("/etc/calaos/datalogger.eet");
+
+  args = calloc(1, sizeof(Calaos_Graph_Args));
+
 
   if (!_parse(args))
     goto error;

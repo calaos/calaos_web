@@ -80,7 +80,8 @@ $(function () {
     console.log(url);
 
     $.getJSON(url, function(json) {
-      chart.series[0].setData(json);
+      options.series[0] = json;
+      console.log(json);
     });
   }
 
