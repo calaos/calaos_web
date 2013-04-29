@@ -1,34 +1,30 @@
-
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="assets/js/highcharts.js"></script>
 <script src="assets/js/exporting.js"></script>
+<link rel="stylesheet" type="text/css" media="all" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" media="all" href="assets/css/daterangepicker.css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script type="text/javascript" src="assets/js/date.js"></script>
+<script type="text/javascript" src="assets/js/daterangepicker.js"></script>
 <script type="text/javascript">
 $(function () {
-  $('#container').highcharts({
+
+  var chart;
+  var options = {
     chart: {
-      type: 'line',
-      marginRight: 130,
-      marginBottom: 25
+      renderTo: 'container',
+      type: 'spline',
     },
     title: {
-      text: 'Monthly Average Temperature',
-      x: -20 //center
+      text: 'Temperature',
     },
     xAxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      type: 'datetime'
     },
     yAxis: {
       title: {
-        text: 'Temperature (°C)'
+        text: '°C'
       },
-      plotLines: [{
-        value: 0,
-        width: 1,
-        color: '#808080'
-      }]
-    },
-    tooltip: {
-      valueSuffix: '°C'
     },
     legend: {
       layout: 'vertical',
@@ -38,24 +34,71 @@ $(function () {
       y: 100,
       borderWidth: 0
     },
-    series: [{
-      name: 'Chambres haut',
-      data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-    }, {
-      name: 'Salon',
-      data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-    }, {
-      name: 'Salle à Manger',
-      data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9, 14.3, 9.0, 3.9, 1.0]
-    }, {
-      name: 'Chambre bas',
-      data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-    }]
-  });
+    series: []
+  };
+
+
+  chart = new Highcharts.Chart(options);
+
+
+
+  $('#reportrange').daterangepicker(
+  {
+    ranges: {
+      'Today': ['today', 'today'],
+      'Yesterday': ['yesterday', 'yesterday'],
+      'Last 7 Days': [Date.today().add({ days: -6 }), 'today'],
+      'Last 30 Days': [Date.today().add({ days: -29 }), 'today'],
+      'This Month': [Date.today().moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth()],
+      'Last Month': [Date.today().moveToFirstDayOfMonth().add({ months: -1 }), Date.today().moveToFirstDayOfMonth().add({ days: -1 })]
+    },
+    opens: 'left',
+    format: 'dd/MM/yyyy',
+    separator: ' to ',
+    startDate: Date.today().add({ days: -29 }),
+   endDate: Date.today(),
+   minDate: '01/01/2000',
+   maxDate: '31/12/2013',
+   locale: {
+      applyLabel: 'Submit',
+      fromLabel: 'From',
+      toLabel: 'To',
+      customRangeLabel: 'Custom Range',
+      daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
+      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      firstDay: 1
+    },
+    showWeekNumbers: true,
+    buttonClasses: ['btn-danger'],
+   dateLimit: false
+  }, 
+
+  function(start, end) {
+    $('#reportrange span').html(start.toString('MMMM d, yyyy') + ' - ' + end.toString('MMMM d, yyyy'));
+
+    url = "cgi/graph.cgi?probe=input_10&precision=h&start=" + (start.getTime() / 1000) + "&stop=" + (end.getTime() / 1000); 
+    console.log(url);
+
+    $.getJSON(url, function(json) {
+      chart.series[0].setData(json);
+    });
+  }
+
+
+);
+
+  //Set the initial state of the picker label
+  $('#reportrange span').html(Date.today().add({ days: -29 }).toString('MMMM d, yyyy') + ' - ' + Date.today().toString('MMMM d, yyyy'));
+
 });
-
-
 </script>
 
-<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto" class="hero-unit">
+
+<div class="well">
+
+  <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+    <i class="icon-calendar icon-large"></i>
+    <span></span> <b class="caret" style="margin-top: 8px"></b>
+  </div>
+  <div id="container"></div>
 </div>
