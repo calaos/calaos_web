@@ -10,32 +10,113 @@
 $(function () {
 
   var chart;
-  var options = {
-    chart: {
-      renderTo: 'container',
-      type: 'spline',
-    },
-    title: {
-      text: 'Temperature',
-    },
-    xAxis: {
-      type: 'datetime'
-    },
-    yAxis: {
-      title: {
-        text: '°C'
-      },
-    },
-    legend: {
-      layout: 'vertical',
-      align: 'right',
-      verticalAlign: 'top',
-      x: -10,
-      y: 100,
-      borderWidth: 0
-    },
-    series: []
-  };
+
+                var options = {
+                    chart: {
+                        renderTo: 'container',
+                        defaultSeriesType: 'spline',
+                        zoomType: 'x'
+                    },
+                    title: {
+                        text: 'Temperatures',
+                        x: -20 //center
+                    },
+                    rangeSelector : {
+                        buttons : [{
+                          type : 'hour',
+                          count : 1,
+                          text : '1h'
+                        },{
+                          type : 'hour',
+                          count : 3,
+                          text : '3h'
+                        },{
+                          type : 'hour',
+                          count : 6,
+                          text : '6h'
+                        },{
+                          type : 'hour',
+                          count : 9,
+                          text : '9h'
+                        },{
+                          type : 'hour',
+                          count : 12,
+                          text : '12h'
+                        },{
+                          type : 'all',
+                          count : 1,
+                          text : 'All'
+                        }],
+                        selected : 5,
+                        inputEnabled : false
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        //tickInterval: 3600 * 1000, // one hour
+                        tickWidth: 0,
+                        gridLineWidth: 1,
+                        maxZoom: 12 * 3600000, // 12 hours
+                        //labels: {
+                        //    align: 'center',
+                        //    x: -3,
+                        //    y: 20,
+                        //    formatter: function() {
+                        //        return Highcharts.dateFormat('%d.%m.%y', this.value) + '<br/>' + Highcharts.dateFormat('%H:%M',this.value) ;
+                        //    }
+                        //}
+                        
+                    },
+                    yAxis: { // Primary yAxis,
+                        title: {
+                            text: 'Temperature',
+                        },
+                        min: 0,
+                        labels: {
+                            formatter: function() {
+                                return this.value + ' °C';
+                            },
+                            style: {
+                                color: '#808080'
+                            }
+                        }
+                    },            
+                    legend: {
+                        backgroundColor: '#FFFFFF',
+                        reversed: false
+                    },
+                    plotOptions: {
+                        spline: {
+                            lineWidth: 4,
+                            states: {
+                                hover: {
+                                    lineWidth: 5
+                                }
+                            },
+                            marker: {
+                                enabled: false,
+                                states: {
+                                    hover: {
+                                        enabled: true,
+                                        symbol: 'circle',
+                                        radius: 8,
+                                        lineWidth: 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    series:  {
+                        type: 'spline',
+                        color: 'blue',
+                        name: 'input_10',
+                        yAxis: 0
+                    },
+                    //exporting: {
+                    //    url: 'http://export.highcharts.com/index-utf8-encode.php'
+                    //}
+                }
+
+
 
 
   chart = new Highcharts.Chart(options);
@@ -43,11 +124,11 @@ $(function () {
   $('#reportrange').daterangepicker(
   {
     ranges: {
-      'Today': [Date.today().add({ days: -1 }), Date.today()],
-      'Yesterday': [Date.today().add({ days: -2 }), Date.today().add({ days: -1 })],
-      'Last 7 Days': [Date.today().add({ days: -6 }), Date.today()],
-      'Last 30 Days': [Date.today().add({ days: -29 }), Date.today()],
-      'This Month': [Date.today().moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth()],
+      'Today': [Date.today(), Date.today().add({ days: 1 })],
+      'Yesterday': [Date.today().add({ days: -1 }), Date.today()],
+      'Last 7 Days': [Date.today().add({ days: -6 }), Date.today().add({days: 1})],
+      'Last 30 Days': [Date.today().add({ days: -29 }), Date.today().add({days: +1})],
+      'This Month': [Date.today().moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth().add({days: 1})],
       'Last Month': [Date.today().moveToFirstDayOfMonth().add({ months: -1 }), Date.today().moveToFirstDayOfMonth().add({ days: -1 })]
     },
     opens: 'left',
@@ -56,7 +137,7 @@ $(function () {
     startDate: Date.today().add({ days: -29 }),
    endDate: Date.today(),
    minDate: '01/01/2000',
-   maxDate: Date.today(),
+   maxDate: Date.today().add({days: 1}),
    locale: {
       applyLabel: 'Submit',
       fromLabel: 'From',
@@ -82,7 +163,10 @@ $(function () {
         chart.series[0].remove();
       }
       chart.addSeries(json);
-      console.log(json);
+
+
+      console.log(Date.today() + "   " +  Date.today().add({ days: 1 }));
+
     });
   }
 
