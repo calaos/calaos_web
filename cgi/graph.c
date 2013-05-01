@@ -147,7 +147,7 @@ _print_values(Calaos_Graph_Args *args)
 	      EINA_LIST_FREE(list->list, value)
 		{
 		  /* This is a huge hack, to eliminate bad temperatures i get with my wireless sensor. This test has to be removed ! */
-		  if (value->value > 100.0)
+		  if (value->value < 100.0)
 		    /* Add couple of values in the string buffer */
 		    eina_strbuf_append_printf(str,"[%ld, %3.3f],", value->timestamp * 1000, value->value); 	  
 		}
