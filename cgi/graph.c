@@ -100,48 +100,69 @@ _print_values(Calaos_Graph_Args *args)
   int list_len = 0;
   Eina_List *filtered;
   int mday, hour = 0;
-  time_t epoch_cur = args->epoch_start;
+  time_t epoch_cur;
   struct tm* cur;
-  int nb_days = (args->epoch_stop  - args->epoch_start) / (24 * 60 * 60);
+  int nb_days;
   int day;
   Eina_Strbuf *str;
 
+  /* Print header used by javascript to define the type of received data */
   printf("Content-Type: application/json\r\n\r\n");
+
+  /* Return json structure */
   printf("{\"data\":[");
+
+  /* 
+   * Buffering couples of values. the json structure need has to be correct, and it must not 
+   * end with a final , so we add a string buffer and we will removed the last ',' at the end.
+   * During tests, json returned structure can be validation with jsonlint.com to see if it's correct
+   */
   str = eina_strbuf_new();
+
+  /* Open the Eet datalogger file */
   ef = eet_open(filename, EET_FILE_MODE_READ_WRITE);
+
+  /* Start at the first date asked */
+  epoch_cur = args->epoch_start;
+  /* Compute the number of days between the two dates */
+  nb_days = (args->epoch_stop  - args->epoch_start) / (24 * 60 * 60);
+
+  /* Interrate on days */
   for (day = 0; day < nb_days; day++)
     {
+      /* Copute the new time for this iteration */
       epoch_cur = args->epoch_start + (day * 24 * 60 * 60);
       cur = localtime(&epoch_cur);
+      
+      /* Iterate on each hour of the day, as we store a section per hour in the datalogger */
       for (hour = 0; hour <  24 ; hour++)
 	{
 	  snprintf(section, sizeof(section), "calaos/sonde/%s/%d/%d/%d/%d/values", args->probe, 
 		   cur->tm_year +  1900, cur->tm_mon + 1, cur->tm_mday, hour);
 
+	  /* Get the lis containing datas in the datalogger file */
 	  list =  eet_data_read(ef, calaos_datalogger_list_edd, section);
 	  if (list)
 	    {
-
-	      EINA_LIST_FOREACH(list->list, l, value)
-		{
-		  if (value->value > 100.0)
-		    list->list = eina_list_remove(list->list, value);
-		}
-
-	      list_len = eina_list_count(list->list);
-
 	      EINA_LIST_FREE(list->list, value)
 		{
-		  eina_strbuf_append_printf(str,"[%ld, %3.3f],", value->timestamp * 1000, value->value); 	  
+		  /* This is a huge hack, to eliminate bad temperatures i get with my wireless sensor. This test has to be removed ! */
+		  if (value->value > 100.0)
+		    /* Add couple of values in the string buffer */
+		    eina_strbuf_append_printf(str,"[%ld, %3.3f],", value->timestamp * 1000, value->value); 	  
 		}
 	    }
 	}
     }
-
+  
+  /* Remove the last ',' char at the end as explained previously */
   eina_strbuf_remove(str, eina_strbuf_length_get(str) - 1,  eina_strbuf_length_get(str));
+
+  /* Print all values */
   printf("%s\n", eina_strbuf_string_get(str));
   printf("]}\n");
+
+  /* Free memory */
   eina_strbuf_free(str);
   eet_close(ef);
 }
@@ -156,6 +177,11 @@ _str2precision(const char *str)
   return 0;
 }
 
+
+/* Arguments are passed via the env var QUERY_STRING
+ * and have this form : probe=input_10&precision=h&start=1367100000&stop=1367418444
+ * This function parse all arguments and store them in the Calaos_Graph_Args
+ */
 Eina_Bool
 _parse(Calaos_Graph_Args *args)
 {
@@ -203,7 +229,9 @@ _parse(Calaos_Graph_Args *args)
 
     }
  
-
+  /* localtime return always the same pointer, so we need to save to content, 
+   * otherwise we loose the content each time we call localtime() !
+   */
   tmp = localtime(&(args->epoch_start));
   args->start = calloc(1, sizeof(struct tm));
   memcpy(args->start, tmp, sizeof(struct tm));
@@ -218,7 +246,6 @@ _parse(Calaos_Graph_Args *args)
   /* printf("Start : %s\n", buf); */
   /* strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", args->stop); */
   /* printf("Stop : %s\n", buf); */
-
 
  error:
    free(elements[0]);
@@ -240,7 +267,6 @@ int main(int argc, char** argv)
     filename = eina_stringshare_add("/etc/calaos/datalogger.eet");
 
   args = calloc(1, sizeof(Calaos_Graph_Args));
-
 
   if (!_parse(args))
     goto error;
