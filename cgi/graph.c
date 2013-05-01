@@ -88,117 +88,62 @@ _init_eet_descriptors(void)
   calaos_datalogger_list_edd = edd;
 }
 
-static void
-_print_values_mins(Calaos_Graph_Args *args)
-{
-  char section[256];
-  Calaos_DataLogger_List *list;
-  Eet_File *ef;
-  Calaos_DataLogger_Values *value;
-  Eina_List *l;
-  int list_len = 0;
-  Eina_List *filtered;
-
-  ef = eet_open(filename, EET_FILE_MODE_READ_WRITE);
-
-  snprintf(section, sizeof(section), "calaos/sonde/%s/%d/%d/%d/%d/values", args->probe, 
-	   args->start->tm_year + 1900, args->start->tm_mon + 1, args->start->tm_mday, args->start->tm_hour);
-
-  list =  eet_data_read(ef, calaos_datalogger_list_edd, section);
-  if (list)
-    {
-      int i = 0;
-
-      EINA_LIST_FOREACH(list->list, l, value)
-	{
-	  if (value->value > 100.0)
-	    list->list = eina_list_remove(list->list, value);
-	}
-
-      list_len = eina_list_count(list->list);
-
-      EINA_LIST_FREE(list->list, value)
-	{
-	  printf("[%ld, %3.3f]", value->timestamp * 1000, value->value);
-	  i++;
-	  if (i != list_len)
-	    printf(",");		  
-	}
-    }
-
-  eet_close(ef);
-}
-
-static void
-_print_values_hours(Calaos_Graph_Args *args)
-{
-  char section[256];
-  Calaos_DataLogger_List *list;
-  Eet_File *ef;
-  Calaos_DataLogger_Values *value;
-  Eina_List *l;
-  int list_len = 0;
-  Eina_List *filtered;
-  int year, mon, mday, hour = 0;
-
-  ef = eet_open(filename, EET_FILE_MODE_READ_WRITE);
-  
-  for (hour = args->start->tm_hour; hour <=  args->stop->tm_hour ; hour++)
-   
-    {
-      snprintf(section, sizeof(section), "calaos/sonde/%s/%d/%d/%d/%d/values", args->probe, 
-	       year +  1900, mon + 1, mday, hour);
-
-      list =  eet_data_read(ef, calaos_datalogger_list_edd, section);
-      if (list)
-	{
-	  int i = 0;
-
-	  EINA_LIST_FOREACH(list->list, l, value)
-	    {
-	      if (value->value > 100.0)
-		list->list = eina_list_remove(list->list, value);
-	    }
-
-	  list_len = eina_list_count(list->list);
-
-	  EINA_LIST_FREE(list->list, value)
-	    {
-	      printf("[%ld, %3.3f]", value->timestamp * 1000, value->value);
-	      i++;
-	      if ((i == list_len) && (hour == (args->stop->tm_hour)))
-		printf("");
-	      else
-		printf(",");		  
-	    }
-
-	}
-    }
-
-  eet_close(ef);
-}
 
 static void
 _print_values(Calaos_Graph_Args *args)
 {
+  char section[256];
+  Calaos_DataLogger_List *list;
+  Eet_File *ef;
+  Calaos_DataLogger_Values *value;
+  Eina_List *l;
+  int list_len = 0;
+  Eina_List *filtered;
+  int mday, hour = 0;
+  time_t epoch_cur = args->epoch_start;
+  struct tm* cur;
+  int nb_days = (args->epoch_stop  - args->epoch_start) / (24 * 60 * 60);
+  int day;
+  Eina_Strbuf *str;
 
   printf("Content-Type: application/json\r\n\r\n");
-  printf("[{\"data\":[");
-  /* if (CHECK_RANGE(year)) */
-  /*   printf("print years\n"); */
-  /*   //_print_values_years(args); */
-  /* else if (CHECK_RANGE(mon)) */
-  /*   printf("Year equal\n"); */
-  /*   //_print_values_months(args); */
-  /* else if (CHECK_RANGE(mday)) */
-  /*   printf("Mon equal\n"); */
-  /*   //_print_values_mdays(args); */
-  /* else  */if ((args->start->tm_hour != args->stop->tm_hour) && (args->start->tm_hour < args->stop->tm_hour))
-    _print_values_hours(args);
-  else
-    _print_values_mins(args);
+  printf("{\"data\":[");
+  str = eina_strbuf_new();
+  ef = eet_open(filename, EET_FILE_MODE_READ_WRITE);
+  for (day = 0; day < nb_days; day++)
+    {
+      epoch_cur = args->epoch_start + (day * 24 * 60 * 60);
+      cur = localtime(&epoch_cur);
+      for (hour = 0; hour <  24 ; hour++)
+	{
+	  snprintf(section, sizeof(section), "calaos/sonde/%s/%d/%d/%d/%d/values", args->probe, 
+		   cur->tm_year +  1900, cur->tm_mon + 1, cur->tm_mday, hour);
 
-  printf("]}]\n");
+	  list =  eet_data_read(ef, calaos_datalogger_list_edd, section);
+	  if (list)
+	    {
+
+	      EINA_LIST_FOREACH(list->list, l, value)
+		{
+		  if (value->value > 100.0)
+		    list->list = eina_list_remove(list->list, value);
+		}
+
+	      list_len = eina_list_count(list->list);
+
+	      EINA_LIST_FREE(list->list, value)
+		{
+		  eina_strbuf_append_printf(str,"[%ld, %3.3f],", value->timestamp * 1000, value->value); 	  
+		}
+	    }
+	}
+    }
+
+  eina_strbuf_remove(str, eina_strbuf_length_get(str) - 1,  eina_strbuf_length_get(str));
+  printf("%s\n", eina_strbuf_string_get(str));
+  printf("]}\n");
+  eina_strbuf_free(str);
+  eet_close(ef);
 }
 
 static Calaos_Graph_Precision

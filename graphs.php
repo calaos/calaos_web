@@ -40,15 +40,13 @@ $(function () {
 
   chart = new Highcharts.Chart(options);
 
-
-
   $('#reportrange').daterangepicker(
   {
     ranges: {
-      'Today': ['today', 'today'],
-      'Yesterday': ['yesterday', 'yesterday'],
-      'Last 7 Days': [Date.today().add({ days: -6 }), 'today'],
-      'Last 30 Days': [Date.today().add({ days: -29 }), 'today'],
+      'Today': [Date.today().add({ days: -1 }), Date.today()],
+      'Yesterday': [Date.today().add({ days: -2 }), Date.today().add({ days: -1 })],
+      'Last 7 Days': [Date.today().add({ days: -6 }), Date.today()],
+      'Last 30 Days': [Date.today().add({ days: -29 }), Date.today()],
       'This Month': [Date.today().moveToFirstDayOfMonth(), Date.today().moveToLastDayOfMonth()],
       'Last Month': [Date.today().moveToFirstDayOfMonth().add({ months: -1 }), Date.today().moveToFirstDayOfMonth().add({ days: -1 })]
     },
@@ -58,7 +56,7 @@ $(function () {
     startDate: Date.today().add({ days: -29 }),
    endDate: Date.today(),
    minDate: '01/01/2000',
-   maxDate: '31/12/2013',
+   maxDate: Date.today(),
    locale: {
       applyLabel: 'Submit',
       fromLabel: 'From',
@@ -80,7 +78,10 @@ $(function () {
     console.log(url);
 
     $.getJSON(url, function(json) {
-      options.series[0] = json;
+      if (chart.series.length) {
+        chart.series[0].remove();
+      }
+      chart.addSeries(json);
       console.log(json);
     });
   }
