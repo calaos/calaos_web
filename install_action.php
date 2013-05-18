@@ -5,7 +5,7 @@ include_once('Utils.php');
 define('PAGE_NAV', 0);
 
 require_once('ConfigParser.php');
-require_once('DetectServer.php');
+//require_once('DetectServer.php');
 
 $data = file_get_contents("php://input");
 
@@ -23,7 +23,7 @@ if ($jdata == NULL)
     die_error();
   }
   else
-{
+  {
     die_error();
   }
 }
@@ -49,6 +49,5 @@ if ($jdata['action'] == 'write_config')
   }
 }
 
-//Error unknown command/action
-die_error();
+
 ?>
