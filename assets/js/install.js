@@ -84,15 +84,11 @@ $(document).ready(function()
                               + '", "start_squeezeplay": "' + $("#checkStartSqueezePlay").is(':checked')
                               + '", "squeezeplay_name": "' + $("#inputSqueezePlayName").val()
                               + '", "start_shairport": "' + $("#checkStartShairport").is(':checked')
-                              + '" }}',
-                        success: function (data) {
-                                setTimeout(function () {
-                                        btn.button('reset');
-                                }, 1000)
-                        }
+                              + '" }}'
+	    }).done(function() {  
+		window.location.href = '/';
 	    });
-	    
-        });
+	});
 });
 
 
