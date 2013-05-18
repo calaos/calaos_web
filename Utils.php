@@ -169,11 +169,11 @@
                 $config = Array();
 
                 $xml = new XMLReader();
-                if (!$xml->open("/etc/calaos/local_config.xml"))
+                if (!$xml->open("/run/calaos/config/local_config.xml"))
 		{
-		    touch("/etc/calaos/local_config.xml");
-		    if (!$xml->open("/etc/calaos/local_config.xml"))
-   		        die("Failed to open '/etc/calaos/local_config.xml'");
+		    touch("/run/calaos/config/local_config.xml");
+		    if (!$xml->open("/run/calaos/config/local_config.xml"))
+   		        die("Failed to open '/run/calaos/config/local_config.xml'");
 		}
                 $found = false;
                 while($xml->read())
@@ -200,7 +200,7 @@
                         $config[] = $option;
                 }
 
-                $handle = fopen("/etc/calaos/local_config.xml", "w+");
+                $handle = fopen("/run/calaos/config/local_config.xml", "w+");
                 if (fwrite($handle, "<?xml version=\"1.0\"?>\n") === false) return false;
                 if (fwrite($handle, "<calaos:config xmlns:calaos=\"http://www.calaos.fr\">\n") === false) return false;
                 for ($i = 0;$i < count($config);$i++)
