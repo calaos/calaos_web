@@ -2,7 +2,7 @@
 
 <?php 
 
-if (!file_exists("/tmp/local_config.xml"))
+if (!file_exists("/run/calaos/config/local_config.xml"))
 {
   echo "Nothing to do; exiting";
   return 0;
@@ -10,20 +10,20 @@ if (!file_exists("/tmp/local_config.xml"))
 
 $xml = new XMLReader();
 
-if (!$xml->open("/tmp/local_config.xml"))
+if (!$xml->open("/run/calaos/config/local_config.xml"))
 {
-  echo "Error Opening /tmp/local_config.xml\n";
+  echo "Error Opening /run/calaos/config/local_config.xml\n";
   return -1;
 }
 
 
-if (!file_exists(getenv("HOME") + "/.config/calaos/"))
+if (!file_exists("/etc/calaos/"))
 {
-  echo "Creating " . getenv("HOME") . "/.config/calaos/\n";
-  mkdir(getenv("HOME") . "/.config/calaos/", 0777, true);
+  echo "Creating /etc/calaos/";
+  mkdir("/etc/calaos/", 0755, true);
 }
 
-if (!rename("/tmp/local_config.xml", getenv("HOME") . "/.config/calaos/local_config.xml"))
+if (!rename("/run/calaos/config/local_config.xml", "/etc/calaos/local_config.xml"))
 {
   echo "Error renaming local_config.xml file\n";
   return -1;
@@ -35,11 +35,8 @@ while($xml->read())
   {
     if ($xml->getAttribute("name") == "hostname")
     {
-      if (!file_put_contents("/etc/hostname", $xml->getAttribute("value") . "\n"))
-      {
-        echo "Error writing hostname\n";
-        return -1;
-      }
+	// Not really safe isn't it ? but how to do that safely in php ?
+	exec("hostnamectl set-hostname \"" . $xml->getAttribute("value") . "\"");	
     }
     if ($xml->getAttribute("name") == "start_calaos_server")
     {
