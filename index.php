@@ -1,6 +1,6 @@
 <?php
 
-	if (!file_exists(/etc/calaos/local_config.xml"))
+	if (!file_exists("/etc/calaos/local_config.xml"))
 	{	
 		include_once "install.php";
                 exit();
