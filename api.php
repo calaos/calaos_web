@@ -39,6 +39,9 @@
                 $jdata = json_decode($data, true);
         }
 
+        //Try to enable CORS requests
+        if (isset($_SERVER['HTTP_ORIGIN']))
+            header("Access-Control-Allow-Origin: ".$_SERVER['HTTP_ORIGIN']);
         header("Content-type: application/json");
 
         if ($jdata == NULL)
