@@ -139,6 +139,8 @@
         function getIOArray($calaos, $room_type, $room_id)
         {
                 $room_items = array();
+                $inputs = array();
+                $outputs = array();
 
                 //Load IOs
                 $res = explode(" ", $calaos->SendRequest("room " . $room_type . " get " . $room_id));
