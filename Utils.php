@@ -2,146 +2,131 @@
         //Some utility functions
         require_once "Calaos.php";
 
-        function get_camera_pic($camera_id, $width = 0, $height = 0)
+        function _image_data_json($url, $type, $width = 0, $height = 0)
         {
-                $calaos = Calaos::Instance();
-                $res = explode(" ", $calaos->SendRequest("camera get ".$camera_id));
-                $val = 0;
-                for ($i = 0;$i < count($res);$i++)
+                $res = array();
+                if ($width == 0 || $height == 0)
                 {
-                        if (ereg ("^jpeg_url", $res[$i]) == true)
-                        {
-                                $val = $i;
-                                break;
-                        }
-                }
-                strtok(urldecode($res[$val]), ':');
-                $url = strtok('');
-
-		if ($width == 0 || $height == 0)
-		{
-			$fp = @fopen($url, "r");
-
-			if ($fp === false)
-			{
-                                $fp = fopen("img/fail_image.png", "r");
-			}
-
-			if ($fp === false)
-			{
-                                die("error");
-			}
-
-			//send image header
-			header("Content-type: image/jpeg");
-
-			while (!feof($fp))
-			{
-				$data = fread($fp, 1024);
-				echo $data;
-			}
-
-			fclose($fp);
-		}
-		else
-		{	
-			$respic = imagecreatetruecolor($width, $height);
-			$src = imagecreatefromjpeg($url);
-
-			if (!$src)
-                        {
-                                $src = imagecreatefrompng("img/fail_image.png");
-
-                                header("Content-type: image/jpeg");
-                                imagejpeg($src);
-                        }
-                        else
-                        {
-                                imagecopyresized($respic, $src, 0, 0, 0, 0, $width, $height, imagesx($src), imagesy($src));
-                                header("Content-type: image/jpeg");
-
-                                imagejpeg($respic);
-                        }
-                }
-
-                $calaos->Clean();
-                exit(0);
-        }
-
-        function get_cover_pic($player_id, $width = 0, $height = 0)
-        {
-                $calaos = Calaos::Instance();
-                $res = explode(" ", $calaos->SendRequest("audio ".$player_id." cover?"));
-                $val = 0;
-                for ($j = 0;$j < count($res);$j++)
-                {
-                        list($opt, $val) = explode(":", urldecode($res[$j]), 2);
-                        if ($opt == "cover")
-                                $url = urldecode($val);
-                }
-
-		if ($width == 0 || $height == 0)
-		{
-
-			$fp = @fopen($url, "r");
-
-			if ($fp === false)
-			{
-                                $fp = fopen("img/fail_image.png", "r");
-			}
+                        $fp = @fopen($url, "r");
 
                         if ($fp === false)
                         {
-                                die("error");
+                                $res["error"] = true;
+                                $res["error_str"] = "unable to open url (".$url.")";
+                                return $res;
                         }
 
-			//send image header
-			header("Content-type: image/jpeg");
+                        $data = "";
+                        while (!feof($fp))
+                                $data .= fread($fp, 1024);
+                        $res["data"] = base64_encode($data);
 
-			while (!feof($fp))
-			{
-				$data = fread($fp, 1024);
-				echo $data;
-			}
+                        fclose($fp);
+                }
+                else
+                {
+                        $respic = imagecreatetruecolor($width, $height);
+                        $src = imagecreatefromjpeg($url);
+                        if (!$src)
+                        {
+                                $res["error"] = true;
+                                $res["error_str"] = "unable to open url (".$url.")";
+                                imagedestroy($respic);
+                                return $res;
+                        }
 
-			fclose($fp);
-		}
-		else
-		{
-			$respic = imagecreatetruecolor($width, $height);
-			$src = @imagecreatefromjpeg($url);
-			if (!$src) $src = @imagecreatefrompng($url);
-			if (!$src)
-			{
-                                $src = imagecreatefrompng("img/fail_image.png");
+                        if ($type == "png")
+                        {
+                                imagealphablending($src, false);
+                                imagesavealpha($src, true);
+                                imagealphablending($respic, false);
+                                imagesavealpha($respic, true);
+                        }
 
-				header("Content-type: image/jpeg");
-				imagejpeg($src);
-			}
-			else
-			{
-				imagealphablending($src, false);
-				imagesavealpha($src, true);
-				imagealphablending($respic, false);
-				imagesavealpha($respic, true);
+                        imagecopyresized($respic, $src, 0, 0, 0, 0, $width, $height, imagesx($src), imagesy($src));
+                        ob_start();
+                        header("Content-type: image/".$type);
+                        if ($type == "jpeg")
+                                imagejpeg($respic);
+                        else
+                                imagepng($respic);
+                        imagedestroy($respic);
+                        imagedestroy($src);
+                        $res["data"] = base64_encode(ob_get_clean());
+                }
+                $res["contenttype"] = "image/".$type;
+                $res["encoding"] = "base64";
+                return $res;
+        }
 
-				imagecopyresized($respic, $src, 0, 0, 0, 0, $width, $height, imagesx($src), imagesy($src));
+        function get_camera_pic($_camera_id, $_width = 0, $_height = 0)
+        {
+                if (isset($_width)) $width = $_width; else $width = 0;
+                if (isset($_height)) $height = $_height; else $height = 0;
 
-				header("Content-type: image/png");
+                $calaos = Calaos::Instance();
 
-				imagepng($respic);
-			}
-		}
+                if (isset($_camera_id))
+                {
+                        $camera_id = $_camera_id;
+                        $res = explode(" ", $calaos->SendRequest("camera get ".$camera_id));
+                        $val = 0;
+                        for ($i = 0;$i < count($res);$i++)
+                        {
+                                if (ereg ("^jpeg_url", $res[$i]) == true)
+                                {
+                                        $val = $i;
+                                        break;
+                                }
+                        }
+                        strtok(urldecode($res[$val]), ':');
+                        $url = strtok('');
 
+                        return _image_data_json($url, 'jpeg', $width, $height);
+                }
+
+                $res = array();
+                $res["error"] = true;
+                $res["error_str"] = "camera_id not set";
                 $calaos->Clean();
-                exit(0);
+                return $res;
+        }
+
+        function get_cover_pic($_player_id, $_width = 0, $_height = 0)
+        {
+                if (isset($_width)) $width = $_width; else $width = 0;
+                if (isset($_height)) $height = $_height; else $height = 0;
+
+                $calaos = Calaos::Instance();
+
+                if (isset($_player_id))
+                {
+                        $player_id = $_player_id;
+                        $res = explode(" ", $calaos->SendRequest("audio ".$player_id." cover?"));
+                        $val = 0;
+                        for ($j = 0;$j < count($res);$j++)
+                        {
+                                list($opt, $val) = explode(":", urldecode($res[$j]), 2);
+                                if ($opt == "cover")
+                                        $url = urldecode($val);
+                        }
+
+                        if (isset($url))
+                                return _image_data_json($url, 'png', $width, $height);
+                }
+
+                $res = array();
+                $res["error"] = true;
+                $res["error_str"] = "player_id not set";
+                $calaos->Clean();
+                return $res;
         }
 
         //Load an option from the xml config file
         function getConfigOption($attribute)
         {
                 $xml = new XMLReader();
-                $xml->open("/mnt/ext3/calaos/local_config.xml");
+                $xml->open("/home/raoul/.config/calaos/local_config.xml");
                 while($xml->read())
                 {
                         if ($xml->name == "calaos:option")
@@ -164,7 +149,7 @@
                 $config = Array();
 
                 $xml = new XMLReader();
-                $xml->open("/mnt/ext3/calaos/local_config.xml");
+                $xml->open("/home/raoul/.config/calaos/local_config.xml");
                 $found = false;
                 while($xml->read())
                 {
@@ -190,7 +175,7 @@
                         $config[] = $option;
                 }
 
-                $handle = fopen("/mnt/ext3/calaos/local_config.xml", "w");
+                $handle = fopen("/home/raoul/.config/calaos/local_config.xml", "w");
                 if (fwrite($handle, '<?xml version="1.0"?>') === false) return false;
                 if (fwrite($handle, '<calaos:config xmlns:calaos="http://www.calaos.fr">') === false) return false;
                 for ($i = 0;$i < count($config);$i++)

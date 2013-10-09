@@ -76,6 +76,7 @@
 
                         $camera["url_lowres"] = "/camera.php?camera_id=$i&width=300&height=225";
                         $camera["url_highres"] = "/camera.php?camera_id=$i&width=640&height=480";
+                        $camera["camera_id"] = "$i";
 
                         $cameras[] = $camera;
                 }
@@ -105,7 +106,7 @@
                                         $audio["database"] = $val;
                         }
 
-                        $audio["player_id"] = $i;
+                        $audio["player_id"] = "$i";
 
                         $value = getAudioInfoArray($calaos, $i, "volume?");
                         $audio["volume"] = $value["volume"];

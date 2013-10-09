@@ -4,9 +4,10 @@
 
         function die_error($error_forbidden = true)
         {
+                header("Content-type: application/json");
                 if ($error_forbidden)
                 {
-                        header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
+                        header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
                         exit();
                 }
                 else
@@ -58,8 +59,6 @@
                 exit();
         }
 
-        header("Content-type: application/json");
-
         if ($jdata == NULL)
         {
                 //If json_decode failed, we can try to get the json from traditionnal Form POST
@@ -103,6 +102,10 @@
 
         if ($pass != $jdata["cn_pass"])
                 die_error();
+
+        header("Content-type: application/json");
+        header("Cache-Control: no-cache, must-revalidate");
+        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
         if ($jdata["action"] == "login")
         {
@@ -207,6 +210,22 @@
         if ($jdata["action"] == "play_file" && isset($uploadfile))
         {
                 die (json_encode(playAudioFile($jdata["player_id"], $uploadfile)));
+        }
+
+        if ($jdata["action"] == "get_cover")
+        {
+                $id = @$jdata["player_id"];
+                $width = @$jdata["width"];
+                $height = @$jdata["height"];
+                die(json_encode(get_cover_pic($id, $width, $height)));
+        }
+
+        if ($jdata["action"] == "get_camera_pic")
+        {
+                $id = @$jdata["camera_id"];
+                $width = @$jdata["width"];
+                $height = @$jdata["height"];
+                die(json_encode(get_camera_pic($id, $width, $height)));
         }
 
         //Error unknown command/action
