@@ -126,7 +126,7 @@
         function getConfigOption($attribute)
         {
                 $xml = new XMLReader();
-                $xml->open("/home/raoul/.config/calaos/local_config.xml");
+                $xml->open("/mnt/ext3/calaos/local_config.xml");
                 while($xml->read())
                 {
                         if ($xml->name == "calaos:option")
@@ -149,7 +149,7 @@
                 $config = Array();
 
                 $xml = new XMLReader();
-                $xml->open("/home/raoul/.config/calaos/local_config.xml");
+                $xml->open("/mnt/ext3/calaos/local_config.xml");
                 $found = false;
                 while($xml->read())
                 {
@@ -175,7 +175,7 @@
                         $config[] = $option;
                 }
 
-                $handle = fopen("/home/raoul/.config/calaos/local_config.xml", "w");
+                $handle = fopen("/mnt/ext3/calaos/local_config.xml", "w");
                 if (fwrite($handle, '<?xml version="1.0"?>') === false) return false;
                 if (fwrite($handle, '<calaos:config xmlns:calaos="http://www.calaos.fr">') === false) return false;
                 for ($i = 0;$i < count($config);$i++)
